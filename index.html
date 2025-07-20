@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subscription Status</title>
+    <!-- Tailwind CSS CDN for easy styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom styles to ensure the page takes full height and centers content */
+        body {
+            font-family: "Inter", sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f0f4f8;
+            text-align: center;
+            padding: 20px;
+        }
+
+        /* Styles for the main content that will fade out */
+        .main-page-content {
+            opacity: 1;
+            transition: opacity 0.7s ease-in-out; /* Smooth fade out transition */
+        }
+
+        /* Styles for the lorem ipsum content that will fade in */
+        .lorem-ipsum-content {
+            opacity: 0; /* Start hidden */
+            transition: opacity 0.7s ease-in-out; /* Smooth fade in transition */
+            max-width: 800px; /* Limit width for readability on larger screens */
+            margin-top: 20px;
+            text-align: left; /* Align text left for better readability */
+            color: #1a202c; /* Darker text color for better contrast */
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex flex-col items-center justify-center min-h-screen">
+
+    <!-- Main page content that will fade out -->
+    <div id="mainPageContent" class="main-page-content flex flex-col items-center justify-center w-full">
+        <!-- Main message indicating subscription status -->
+        <h1 class="text-6xl font-extrabold text-black mb-10 leading-tight">1 year subscription expired</h1>
+
+        <!-- Subscribe button -->
+        <button id="subscribeButton"
+                class="bg-red-600 hover:bg-red-700 text-white font-semibold py-3 px-6 rounded-full shadow-lg transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-75">
+            Subscribe
+        </button>
+    </div>
+
+    <!-- Hidden div for the lorem ipsum content, initially hidden and will fade in -->
+    <!-- Removed blue box styling classes: p-6 bg-blue-50 border-l-4 border-blue-400 text-blue-800 rounded-lg -->
+    <div id="loremIpsumContainer" class="lorem-ipsum-content hidden w-full">
+        <!-- Lorem ipsum text will be inserted here by JavaScript -->
+        <!-- Increased text size from text-lg to text-xl -->
+        <p class="text-xl leading-relaxed"></p>
+    </div>
+
+    <script>
+        // Get references to the elements
+        const subscribeButton = document.getElementById('subscribeButton');
+        const mainPageContent = document.getElementById('mainPageContent');
+        const loremIpsumContainer = document.getElementById('loremIpsumContainer');
+
+        // Function to generate random Lorem Ipsum text
+        function generateLoremIpsum(wordCount) {
+            const words = [
+                "lorem", "ipsum", "dolor", "sit", "amet", "consectetur", "adipiscing", "elit", "sed", "do",
+                "eiusmod", "tempor", "incididunt", "ut", "labore", "et", "dolore", "magna", "aliqua", "ut",
+                "enim", "ad", "minim", "veniam", "quis", "nostrud", "exercitation", "ullamco", "laboris", "nisi",
+                "ut", "aliquip", "ex", "ea", "commodo", "consequat", "duis", "aute", "irure", "dolor", "in",
+                "reprehenderit", "in", "voluptate", "velit", "esse", "cillum", "dolore", "eu", "fugiat", "nulla",
+                "pariatur", "excepteur", "sint", "occaecat", "cupidatat", "non", "proident", "sunt", "in", "culpa",
+                "qui", "officia", "deserunt", "mollit", "anim", "id", "est", "laborum"
+            ];
+            let result = [];
+            for (let i = 0; i < wordCount; i++) {
+                result.push(words[Math.floor(Math.random() * words.length)]);
+            }
+            return result.join(' ') + '.';
+        }
+
+        // Add an event listener to the subscribe button
+        subscribeButton.addEventListener('click', () => {
+            // Start fading out the main content by setting its opacity to 0
+            mainPageContent.style.opacity = '0';
+
+            // After the fade-out transition completes (0.7 seconds), hide the main content
+            // and then show and fade in the lorem ipsum text
+            setTimeout(() => {
+                mainPageContent.style.display = 'none'; // Hide the main content element
+
+                // Generate a random amount of lorem ipsum text (between 50 and 150 words)
+                const randomWordCount = Math.floor(Math.random() * 101) + 50;
+                const loremIpsumText = generateLoremIpsum(randomWordCount);
+
+                // Populate the lorem ipsum container with the generated text
+                loremIpsumContainer.querySelector('p').textContent = loremIpsumText;
+
+                // Make the lorem ipsum container visible (remove 'hidden' class)
+                loremIpsumContainer.classList.remove('hidden');
+                // Force a browser reflow to ensure the opacity change is animated
+                // This is a common trick to make the transition work when changing display property
+                loremIpsumContainer.offsetWidth;
+                // Start fading in the lorem ipsum content by setting its opacity to 1
+                loremIpsumContainer.style.opacity = '1';
+
+            }, 700); // This timeout duration should match the CSS transition duration
+        });
+    </script>
+</body>
+</html>
