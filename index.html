@@ -18,6 +18,7 @@
             background-color: #f0f4f8;
             text-align: center;
             padding: 20px;
+            overflow: hidden; /* Hide overflow for confetti */
         }
 
         /* Styles for the main content that will fade out */
@@ -34,6 +35,31 @@
             margin-top: 20px;
             text-align: left; /* Align text left for better readability */
             color: #1a202c; /* Darker text color for better contrast */
+            display: flex; /* Use flexbox for vertical alignment of text and button */
+            flex-direction: column;
+            align-items: center; /* Center items horizontally within this flex container */
+        }
+
+        /* Confetti particle styles */
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: #f00; /* Default color */
+            opacity: 0;
+            animation: confetti-fall 6s forwards; /* Increased duration to 6s for slower fall */
+            border-radius: 50%; /* Make them round */
+        }
+
+        @keyframes confetti-fall {
+            0% {
+                transform: translateY(-50px) rotate(0deg); /* Start above the viewport */
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(720deg);
+                opacity: 0;
+            }
         }
     </style>
 </head>
@@ -51,12 +77,36 @@
         </button>
     </div>
 
-    <!-- Hidden div for the lorem ipsum content, initially hidden and will fade in -->
-    <!-- Removed blue box styling classes: p-6 bg-blue-50 border-l-4 border-blue-400 text-blue-800 rounded-lg -->
+    <!-- Hidden div for the letter content, initially hidden and will fade in -->
     <div id="loremIpsumContainer" class="lorem-ipsum-content hidden w-full">
-        <!-- Lorem ipsum text will be inserted here by JavaScript -->
-        <!-- Increased text size from text-lg to text-xl -->
-        <p class="text-xl leading-relaxed"></p>
+        <!-- The actual letter content -->
+        <div class="text-xl leading-relaxed mb-8">
+            <p>Dear Sophie,</p>
+            <br>
+            <p>Congratulations! 🎉 You've officially completed your one-year subscription of dating. The trial period is now over.</p>
+            <br>
+            <p>To continue enjoying premium benefits such as:</p>
+            <ul class="list-disc list-inside ml-4 mt-2">
+                <li>Unlimited hugs 🤗</li>
+                <li>Unlimited bad jokes 😂</li>
+                <li>Unlimited farts and burping 😮‍💨</li>
+                <li>Unlimited use of Manager Fügi 🐶</li>
+            </ul>
+            <br>
+            <p>please click "RE-SUBSCRIBE" below to upgrade to the Marriage Plan (Lifetime Membership).</p>
+            <br>
+            <p>I don’t want to write a long, cheesy letter — I just want to thank you for this past year. Through all the ups and downs, I’ve genuinely loved every moment with you. You've made this year unforgettable, and I’m so excited about all the years we have ahead of us - as a married couple by then.</p>
+            <br>
+            <p>So 싸우지 말자 and 잘 부탁드립니다!</p>
+            <br>
+            <p>I love you ❤️</p>
+        </div>
+
+        <!-- Resubscribe button, styled identically to the subscribe button -->
+        <button id="resubscribeButton"
+                class="bg-red-600 hover:bg-red-700 text-white font-semibold py-3 px-6 rounded-full shadow-lg transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-75">
+            Resubscribe
+        </button>
     </div>
 
     <script>
@@ -64,51 +114,53 @@
         const subscribeButton = document.getElementById('subscribeButton');
         const mainPageContent = document.getElementById('mainPageContent');
         const loremIpsumContainer = document.getElementById('loremIpsumContainer');
+        const resubscribeButton = document.getElementById('resubscribeButton'); // Get the new button
 
-        // Function to generate random Lorem Ipsum text
-        function generateLoremIpsum(wordCount) {
-            const words = [
-                "lorem", "ipsum", "dolor", "sit", "amet", "consectetur", "adipiscing", "elit", "sed", "do",
-                "eiusmod", "tempor", "incididunt", "ut", "labore", "et", "dolore", "magna", "aliqua", "ut",
-                "enim", "ad", "minim", "veniam", "quis", "nostrud", "exercitation", "ullamco", "laboris", "nisi",
-                "ut", "aliquip", "ex", "ea", "commodo", "consequat", "duis", "aute", "irure", "dolor", "in",
-                "reprehenderit", "in", "voluptate", "velit", "esse", "cillum", "dolore", "eu", "fugiat", "nulla",
-                "pariatur", "excepteur", "sint", "occaecat", "cupidatat", "non", "proident", "sunt", "in", "culpa",
-                "qui", "officia", "deserunt", "mollit", "anim", "id", "est", "laborum"
-            ];
-            let result = [];
-            for (let i = 0; i < wordCount; i++) {
-                result.push(words[Math.floor(Math.random() * words.length)]);
+        // Function to create and animate confetti
+        function createConfetti() {
+            const colors = ['#f00', '#0f0', '#00f', '#ff0', '#0ff', '#f0f']; // Confetti colors
+            const count = 150; // Number of confetti particles
+
+            for (let i = 0; i < count; i++) {
+                const confetti = document.createElement('div');
+                confetti.classList.add('confetti');
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                // Position confetti randomly across the top of the viewport
+                confetti.style.left = `${Math.random() * 100}vw`;
+                confetti.style.top = `-10px`; // Start slightly above the top edge
+                confetti.style.animationDelay = `${Math.random() * 0.8}s`; // Stagger animation start slightly more
+                document.body.appendChild(confetti);
+
+                // Remove confetti element after animation to prevent DOM clutter
+                confetti.addEventListener('animationend', () => {
+                    confetti.remove();
+                });
             }
-            return result.join(' ') + '.';
         }
 
-        // Add an event listener to the subscribe button
+        // Add event listener to the initial subscribe button
         subscribeButton.addEventListener('click', () => {
             // Start fading out the main content by setting its opacity to 0
             mainPageContent.style.opacity = '0';
 
             // After the fade-out transition completes (0.7 seconds), hide the main content
-            // and then show and fade in the lorem ipsum text
+            // and then show and fade in the letter text
             setTimeout(() => {
                 mainPageContent.style.display = 'none'; // Hide the main content element
 
-                // Generate a random amount of lorem ipsum text (between 50 and 150 words)
-                const randomWordCount = Math.floor(Math.random() * 101) + 50;
-                const loremIpsumText = generateLoremIpsum(randomWordCount);
-
-                // Populate the lorem ipsum container with the generated text
-                loremIpsumContainer.querySelector('p').textContent = loremIpsumText;
-
-                // Make the lorem ipsum container visible (remove 'hidden' class)
+                // Make the letter container visible (remove 'hidden' class)
                 loremIpsumContainer.classList.remove('hidden');
                 // Force a browser reflow to ensure the opacity change is animated
-                // This is a common trick to make the transition work when changing display property
                 loremIpsumContainer.offsetWidth;
-                // Start fading in the lorem ipsum content by setting its opacity to 1
+                // Start fading in the letter content by setting its opacity to 1
                 loremIpsumContainer.style.opacity = '1';
 
             }, 700); // This timeout duration should match the CSS transition duration
+        });
+
+        // Add event listener to the new resubscribe button
+        resubscribeButton.addEventListener('click', () => {
+            createConfetti(); // Trigger confetti effect
         });
     </script>
 </body>
