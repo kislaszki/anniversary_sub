@@ -18,7 +18,7 @@
             background-color: #f0f4f8;
             text-align: center;
             padding: 20px;
-            overflow: hidden; /* Hide overflow for confetti */
+            /* Removed: overflow: hidden; to allow scrolling on mobile */
         }
 
         /* Styles for the main content that will fade out */
@@ -38,6 +38,7 @@
             display: flex; /* Use flexbox for vertical alignment of text and button */
             flex-direction: column;
             align-items: center; /* Center items horizontally within this flex container */
+            padding-bottom: 50px; /* Add some padding at the bottom for scrolling */
         }
 
         /* Confetti particle styles */
